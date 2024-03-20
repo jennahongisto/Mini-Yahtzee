@@ -93,6 +93,14 @@ export default function Gameboard({navigation, route}) {
         return (selectedDicePoints[i]) ? 'black' : 'steelblue'
     }
 
+    function calculateTotalPoints() {
+        let totalPoints = 0;
+        dicePointsTotal.forEach((points) => {
+          totalPoints += points;
+        });
+        return totalPoints;
+      }
+
     const selectDicePoints = (i) => {
         if (nbrOfThrowsLeft === 0) {
         let selected = [...selectedDices]
@@ -105,6 +113,7 @@ export default function Gameboard({navigation, route}) {
         setDicePointsTotal(points)
         setSelectedDicePoints(selectedPoints)
         setNbrOfThrowsLeft(NBR_OF_THROWS)
+        setSelectedDices(new Array(NBR_OF_DICES).fill(false))
         return points[i]
         }
         else {
@@ -157,6 +166,7 @@ export default function Gameboard({navigation, route}) {
                 onPress={() => throwDices()}>
                 <Text>Throw dices</Text>
             </Pressable>
+            <Text>Total Points: {calculateTotalPoints()}</Text>
             <Container>
                 <Row>{pointsRow}</Row>
             </Container>
