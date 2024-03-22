@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
-
 const Tab = createBottomTabNavigator()
 
 export default function App() {
@@ -35,7 +34,7 @@ return (
             size={size} 
             color={color} />;
        },
-        tabBarActiveTintColor: 'steelblue',
+        tabBarActiveTintColor: '#69756a',
         tabBarInactiveTintColor: 'gray',
       })}
     >

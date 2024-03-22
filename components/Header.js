@@ -1,11 +1,11 @@
 import React from 'react'
 import { Text, View } from 'react-native'
-import styles from '../style/Style'
+import style from '../style/Style'
 
 export default function Header() {
   return (
-    <View style={styles.header}>
-      <Text style={styles.title}>
+    <View style={style.header}>
+      <Text style={style.title}>
         Mini-Yahtzee
       </Text>
     </View>

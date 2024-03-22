@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, Pressable } from "react-native";
-import styles from "../style/Style";
+import style from "../style/Style";
 import {
   NBR_OF_DICES,
   NBR_OF_THROWS,
@@ -23,6 +23,7 @@ export default function Gameboard({navigation, route}) {
     const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState (NBR_OF_THROWS)
     const [status, setStatus] = useState('Throw dices')
     const [gameEndStatus, setGameEndStatus] = useState(false)
+    const [totalPoints, setTotalPoints] = useState(0)
 
     const [selectedDices, setSelectedDices] = useState (new Array(NBR_OF_DICES).fill(false))
     const [diceSpots, setDiceSpots] = useState (new Array(NBR_OF_DICES).fill(0))
@@ -36,6 +37,13 @@ export default function Gameboard({navigation, route}) {
             setPlayerName(route.params.player)
           }
     }, [])
+
+    useEffect(() => {
+      const allPointsSelected = dicePointsTotal.every((points) => points > 0);
+      if (allPointsSelected) {
+        setGameEndStatus(true);
+      }
+    }, [dicePointsTotal]);
 
     const row = [];
     for (let dice = 0; dice < NBR_OF_DICES; dice++) {
@@ -86,11 +94,11 @@ export default function Gameboard({navigation, route}) {
       }
 
     function getDiceColor(i) {
-        return selectedDices[i] ? 'black' : 'steelblue'
+        return selectedDices[i] ? 'black' : '#989f99'
     }
 
     function getDicePointsColor(i) {
-        return (selectedDicePoints[i]) ? 'black' : 'steelblue'
+        return (selectedDicePoints[i]) ? 'black' : '#989f99'
     }
 
     function calculateTotalPoints() {
@@ -137,6 +145,7 @@ export default function Gameboard({navigation, route}) {
       }
 
     const throwDices = () => {
+      if (nbrOfThrowsLeft > 0) {
         let spots = [...diceSpots]
         for (let i = 0; i < NBR_OF_DICES; i++) {
           if (!selectedDices[i]) {
@@ -147,33 +156,53 @@ export default function Gameboard({navigation, route}) {
         }
         setDiceSpots(spots)
         setNbrOfThrowsLeft(nbrOfThrowsLeft-1);
+      } else {
+        setStatus("Select points")
       }
+    }
 
       function getSpotTotal(i) {
         return dicePointsTotal[i]
       }
 
+      const startNewGame = () => {
+        setNbrOfThrowsLeft(NBR_OF_THROWS);
+        setStatus("Throw dices");
+        setGameEndStatus(false);
+        setSelectedDices(new Array(NBR_OF_DICES).fill(false));
+        setDiceSpots(new Array(NBR_OF_DICES).fill(0));
+        setSelectedDicePoints(new Array(MAX_SPOT).fill(false));
+        setDicePointsTotal(new Array(MAX_SPOT).fill(0));
+        setTotalPoints(0);
+      }
+
     return (
         <>
         <Header />
-        <View>
+        <View style={style.gameboard}>
             <Container>
                 <Row>{row}</Row>
             </Container>
-            <Text>Throws left: {nbrOfThrowsLeft}</Text>
-            <Text>{status}</Text>
+            <Text style={style.label}>Throws left: {nbrOfThrowsLeft}</Text>
+            <Text style={[style.label, {fontWeight: '500'}]}>{status}</Text>
             <Pressable
-                onPress={() => throwDices()}>
-                <Text>Throw dices</Text>
+                onPress={() => throwDices()} style={style.button}>
+                <Text style={style.buttonText}>Throw dices</Text>
             </Pressable>
-            <Text>Total Points: {calculateTotalPoints()}</Text>
-            <Container>
+            <Text style={style.titles}>Total Points: {calculateTotalPoints()} {calculateTotalPoints() > 63 ? "(+ 50 Bonus Points)" : ""}</Text>
+            <Text style={style.label}>Points to bonus: {Math.max(63 - calculateTotalPoints(), 0)}</Text>
+            <Container style={style.row}>
                 <Row>{pointsRow}</Row>
             </Container>
             <Container>
                 <Row>{pointsToSelectRow}</Row>
             </Container>
-            <Text>Player: {playerName}</Text>
+            <Text style={style.label}>Player: {playerName}</Text>
+            {gameEndStatus && (
+            <Pressable onPress={() => startNewGame()} style={style.button}>
+              <Text style={style.buttonText}>Start New Game</Text>
+            </Pressable>
+        )}
         </View>
         <Footer />
         </>

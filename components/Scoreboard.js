@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View } from 'react-native'
-import styles from '../style/Style'
+import style from '../style/Style'
 
 export default function Scoreboard(navigation) {
   return (
